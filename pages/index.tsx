@@ -10,11 +10,10 @@ const ListItem = ({ items }: { items: [] }) => {
   return (
     <div>
       {items.map((item, idx) => (
-        <Link href={item["DocumentId"]} passHref>
+        <Link href={item["DocumentId"]} passHref key={idx}>
           <a target={"_blank"}>
             <Flex
               direction={"column"}
-              key={idx}
               // backgroundColor={"green.100"}
               margin={"auto"}
               marginTop={"10px"}
