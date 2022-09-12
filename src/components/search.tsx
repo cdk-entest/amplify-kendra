@@ -119,7 +119,7 @@ export const SearchUI = () => {
 
   const onKeyDown = React.useCallback(
     (e: React.KeyboardEvent) => {
-      eventRef.current = "keyboard";
+      // eventRef.current = "keyboard";
       switch (e.key) {
         case "ArrowDown": {
           e.preventDefault();
@@ -164,7 +164,7 @@ export const SearchUI = () => {
   };
 
   const onKeyUp = React.useCallback((e: React.KeyboardEvent) => {
-    eventRef.current = "keyboard";
+    // eventRef.current = "keyboard";
     switch (e.key) {
       case "Control":
       case "Alt":
@@ -265,7 +265,7 @@ export const SearchUI = () => {
                           aria-selected={selected ? true : undefined}
                           onMouseEnter={() => {
                             setActive(idx);
-                            eventRef.current = "mouse";
+                            // eventRef.current = "mouse";
                           }}
                           role={"option"}
                           sx={{
