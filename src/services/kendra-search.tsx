@@ -1,8 +1,9 @@
 import axios from "axios";
+import config from "./../../config";
 
 export const search = async (query: string) => {
   const { data, status } = await axios.get<any>(
-    `https://a3qc77koo0.execute-api.us-east-1.amazonaws.com/dev/items/query?query=${query}`
+    `${config.kendra_url}/query?query=${query}`
   );
 
   if (status === 200) {

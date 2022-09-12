@@ -6,6 +6,7 @@
 .pnp.js
 amplify 
 aws-exports.js
+config.js
 
 # testing
 /coverage
