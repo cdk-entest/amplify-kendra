@@ -3,13 +3,13 @@
 
 const awsmobile = {
     "aws_project_region": "us-east-1",
-    "aws_cloud_logic_custom": [
-        {
-            "name": "api1ed17962",
-            "endpoint": "https://a3qc77koo0.execute-api.us-east-1.amazonaws.com/dev",
-            "region": "us-east-1"
-        }
-    ]
+    // "aws_cloud_logic_custom": [
+    //     {
+    //         "name": "api1ed17962",
+    //         "endpoint": "https://a3qc77koo0.execute-api.us-east-1.amazonaws.com/dev",
+    //         "region": "us-east-1"
+    //     }
+    // ]
 };
 
 
