@@ -1,34 +1,123 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+---
+title: Kendra Search
+description: build a search with amplify rest api and kendra search
+author: haimtran
+publishedDate: 13/09/2022
+date: 2022-09-13
+---
 
-## Getting Started
+## Introduction
 
-First, run the development server:
+[GitHub](https://github.com/entest-hai/amplify-kendra) shows how to use Amplify and Kendra to build a search
+
+- amplify add rest api lambda
+- setup kendra search index
+- expose kendra search via lambda rest api
+
+<LinkedImage
+  href="https://youtu.be/0z_hqB4wh_Y"
+  height={400}
+  alt="Kendra Search"
+  src="/thumbnail/kendra-search.png"
+/>
+
+## NextJS Setup
+
+create a new project
 
 ```bash
-npm run dev
-# or
-yarn dev
+npx create-next-app@latest --typescript
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+install dependencies
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```bash
+npm i @chakra-ui/react @emotion/react @emotion/styled framer-motion react-icons @chakra-ui/icons aws-amplify
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Amplify Setup
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+This will setup a new amplify project with a rest api which will query the kendra service.
 
-## Learn More
+init a project
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+amplify init
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+add auth
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```bash
+amplify add auth
+```
 
-## Deploy on Vercel
+add api and select rest (lambda backed), then select running time python 3.8 required. We can select both authenticated and guest users can use this api.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+amplify add api
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Kendra Setup
+
+This step will take about 30 minutes for the Kendra to indexing data sources.
+
+- create a index
+- provide the source for example a web crawler
+- provide the web url for the crawler
+- tune some parameters such as depth
+
+then we can call the api which send a query to kendra as below
+
+```tsx
+import axios from "axios";
+import config from "./../../config";
+
+export const search = async (query: string) => {
+  const { data, status } = await axios.get<any>(
+    `${config.kendra_url}/query?query=${query}`
+  );
+
+  if (status === 200) {
+    console.log(data["ResultItems"]);
+    return data["ResultItems"];
+  } else {
+    console.log("error", status);
+    return [];
+  }
+};
+```
+
+## FrontEnd
+
+when the enter pressed we need to capture input query and perform a search. This is done by using onKeyDown function. It is nicer to use modal popup for search.
+
+```tsx
+<chakra.input
+  aria-autocomplete="list"
+  autoComplete="off"
+  autoCorrect="off"
+  spellCheck="false"
+  maxLength={64}
+  sx={{
+    w: "100%",
+    h: "68px",
+    pl: "68px",
+    fontWeight: "medium",
+    outline: 0,
+    bg: "gray.200",
+    _focus: { shadow: "outline" },
+    rounded: "7px",
+    ".chakra-ui-dark &": { bg: "gray.700" },
+  }}
+  placeholder="Search the docs"
+  value={query}
+  onChange={(e) => {
+    setQuery(e.target.value);
+  }}
+  onKeyDown={(e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      console.log("search for ", query);
+      callSearch(query);
+    }
+  }}
+```
